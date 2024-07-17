@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs'
 import User from '../models/user.model.js'
+import generateTokenAndSetCookie from '../utils/generateToken.js'
 
 export const signup = async (req, res) => {
   try {
@@ -31,6 +32,7 @@ export const signup = async (req, res) => {
     })
 
     if (newUser) {
+      generateTokenAndSetCookie(newUser._id, res)
       await newUser.save()
 
       res.status(201).json({
@@ -40,7 +42,7 @@ export const signup = async (req, res) => {
         profilePic: newUser.profilePic,
       })
     } else {
-      res.status(400).json({error: "Invalid user data auth.controller.js"})
+      res.status(400).json({ error: 'Invalid user data auth.controller.js' })
     }
   } catch (error) {
     console.log('Error in signup controller', error.message)
